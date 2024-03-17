@@ -4,12 +4,12 @@ from abc import ABC, abstractmethod
 # Clase abstracta
 class ManejadorBase(ABC):
     def __init__(self, proximo_manejador=None):
-        self.proximo_manejador = proximo_manejador
+        self._proximo_manejador = proximo_manejador
 
     @abstractmethod
     def manejar_solicitud(self, solicitud):
-        if self.proximo_manejador:
-            return self.proximo_manejador.manejar_solicitud(solicitud)
+        if self._proximo_manejador:
+            return self._proximo_manejador.manejar_solicitud(solicitud)
         else:
             return None
 
@@ -90,8 +90,8 @@ def validar_datos(datos_solicitud) -> bool:
     else:
         return False
 
-# Clases para simular el procesamiento de una solicitud enviada
-class Sistema:
+# Clases para simular la verificacion de una solicitud enviada
+class Verificacion:
     # Al crearse la clase se instancian las validaciones
     def __init__(self, intentos_fallidos: dict, cache: dict):
         self.intentos_fallidos = intentos_fallidos
@@ -132,6 +132,8 @@ if __name__ == '__main__':
     cache = {
         hash('usuario'+'miclave'+'192.168.1.1'): 'Acceso autorizado'
     }
-    sistema = Sistema(intentos_fallidos=intentos_fallidos, cache=cache)
-    respuesta = sistema.procesar_solicitud(solicitud)
+    # Una vez recibida la solicitud, la fincionalidad del sistema de ordenes encargada de verificar la misma, la procesa,
+    # y emite una respuesta, dando acceso o no al sistema de ordenes
+    verificacion = Verificacion(intentos_fallidos=intentos_fallidos, cache=cache)
+    respuesta = verificacion.procesar_solicitud(solicitud)
     print(respuesta)
